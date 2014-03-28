@@ -1,9 +1,9 @@
-#gender
+#gender analysis, uses c code found online
 import subprocess
 import csv
 import math
 
-executable ="/Users/davej/Downloads/names/0717-182/gender"
+executable ="/Users/davej/TW/recruiting/gender"
 parameters="-get_gender"
 name_file="/Users/davej/JC-names-big.csv"
 
@@ -25,9 +25,29 @@ def get_gender(first_name):
     if gender == 'un': gender="unisex"
     return gender
     
-def read_names():
-    names=list(csv.DictReader(open(name_file,'rU')))
-    return names
+def read_names(ret_dups=False):
+    names=[]
+    allnames=[]
+    dups=[]
+    for peep in csv.DictReader(open(name_file,'rU')):
+        pname=peep["Full name"]
+        if pname in allnames :
+            #print "Maybe a dup!: %s"%pname
+            #print peep
+            dups.append(peep)
+        else :
+            allnames.append(pname)
+            names.append(peep)
+            
+            
+    print "Read %s people"%len(names)
+    print "ndups=%s"%len(dups)
+    #TODO : must dedup or merge this list!
+    #print "not deduped yet!"
+    if ret_dups : 
+        return (names,dups)
+    else :
+        return names
 
 def force_decision(genders,strict=True):
     if genders.__class__ == str : genders=[genders]
